@@ -120,3 +120,6 @@ Este repositorio utiliza GitHub Actions para CI/CD:
 ## Licencia
 
 Este proyecto es parte de FitLife Gym Management System.
+
+---
+*Última actualización: Junio 2026*
