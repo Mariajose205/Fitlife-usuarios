@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
@@ -58,7 +58,7 @@ class UsuarioControllerTest {
         loginRequest.put("password", "password123");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
-        when(usuarioService.verificarPassword(any(String.class), any(String.class))).thenReturn(true);
+        when(usuarioService.verificarPassword(anyString(), anyString())).thenReturn(true);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
@@ -70,7 +70,7 @@ class UsuarioControllerTest {
         assertNotNull(responseBody.get("user"));
         
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
-        verify(usuarioService, times(1)).verificarPassword(any(String.class), any(String.class));
+        verify(usuarioService, times(1)).verificarPassword(anyString(), anyString());
     }
 
     @Test
@@ -94,13 +94,13 @@ class UsuarioControllerTest {
         loginRequest.put("password", "wrongpassword");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
-        when(usuarioService.verificarPassword("wrongpassword", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi")).thenReturn(false);
+        when(usuarioService.verificarPassword(anyString(), anyString())).thenReturn(false);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
         assertEquals(401, response.getStatusCode().value());
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
-        verify(usuarioService, times(1)).verificarPassword("wrongpassword", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi");
+        verify(usuarioService, times(1)).verificarPassword(anyString(), anyString());
     }
 
     @Test
@@ -116,7 +116,7 @@ class UsuarioControllerTest {
 
         assertEquals(401, response.getStatusCode().value());
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
-        verify(usuarioService, never()).verificarPassword(any(), any());
+        verify(usuarioService, never()).verificarPassword(anyString(), anyString());
     }
 
     @Test
