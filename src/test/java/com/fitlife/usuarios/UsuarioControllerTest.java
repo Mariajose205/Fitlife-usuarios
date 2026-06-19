@@ -43,7 +43,7 @@ class UsuarioControllerTest {
         usuario.setId(1L);
         usuario.setNombre("Juan Pérez");
         usuario.setEmail("juan@example.com");
-        usuario.setPassword("password123");
+        usuario.setPassword("$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi"); // BCrypt hash de "password123"
         usuario.setRol(Usuario.Rol.USER);
         usuario.setActivo(true);
         usuario.setTelefono("+56912345678");
@@ -58,7 +58,7 @@ class UsuarioControllerTest {
         loginRequest.put("password", "password123");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
-        when(usuarioService.verificarPassword("password123", "password123")).thenReturn(true);
+        when(usuarioService.verificarPassword("password123", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi")).thenReturn(true);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
@@ -70,7 +70,7 @@ class UsuarioControllerTest {
         assertNotNull(responseBody.get("user"));
         
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
-        verify(usuarioService, times(1)).verificarPassword("password123", "password123");
+        verify(usuarioService, times(1)).verificarPassword("password123", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi");
     }
 
     @Test
@@ -94,13 +94,13 @@ class UsuarioControllerTest {
         loginRequest.put("password", "wrongpassword");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
-        when(usuarioService.verificarPassword("wrongpassword", "password123")).thenReturn(false);
+        when(usuarioService.verificarPassword("wrongpassword", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi")).thenReturn(false);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
         assertEquals(401, response.getStatusCode().value());
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
-        verify(usuarioService, times(1)).verificarPassword("wrongpassword", "password123");
+        verify(usuarioService, times(1)).verificarPassword("wrongpassword", "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi");
     }
 
     @Test
