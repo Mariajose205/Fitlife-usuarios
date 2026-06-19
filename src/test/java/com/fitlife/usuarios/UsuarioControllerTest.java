@@ -58,6 +58,7 @@ class UsuarioControllerTest {
         loginRequest.put("password", "password123");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
+        when(usuarioService.verificarPassword("password123", "password123")).thenReturn(true);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
@@ -69,6 +70,7 @@ class UsuarioControllerTest {
         assertNotNull(responseBody.get("user"));
         
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
+        verify(usuarioService, times(1)).verificarPassword("password123", "password123");
     }
 
     @Test
@@ -92,11 +94,13 @@ class UsuarioControllerTest {
         loginRequest.put("password", "wrongpassword");
 
         when(usuarioService.obtenerUsuarioPorEmail("juan@example.com")).thenReturn(Optional.of(usuario));
+        when(usuarioService.verificarPassword("wrongpassword", "password123")).thenReturn(false);
 
         ResponseEntity<?> response = usuarioController.login(loginRequest);
 
         assertEquals(401, response.getStatusCode().value());
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
+        verify(usuarioService, times(1)).verificarPassword("wrongpassword", "password123");
     }
 
     @Test
@@ -112,6 +116,7 @@ class UsuarioControllerTest {
 
         assertEquals(401, response.getStatusCode().value());
         verify(usuarioService, times(1)).obtenerUsuarioPorEmail("juan@example.com");
+        verify(usuarioService, never()).verificarPassword(any(), any());
     }
 
     @Test
